@@ -55,10 +55,14 @@ def theform():
         return  render_template('form.html')
     else:
         name = request.form['name']
-        #location= request.form['location']
+        location= request.form['location']
+
+        db = get_db()
+        db.execute('insert into users (name, location) values (?, ?)', [name, location])
+        db.commit()
 
         #return 'Hello {}.  You are from {}.  You have submitted the form sucessfully!'.format(name, location)
-        return redirect(url_for('home', name=name))
+        return redirect(url_for('home', name=name, Location=location))
 '''
 @app.route('/process', methods=['POST'])
 def process():
@@ -83,7 +87,7 @@ def viewresults():
     db = get_db()
     cur = db.execute('select id, name, location from users')
     results = cur.fetchall()
-    return '<h1>The ID is {}.  The name is {}.  The location is {}</h1>'.format(results[0]['id'], results[0]['name'], results[0]['location'])
+    return '<h1>The ID is {}.  The name is {}.  The location is {}</h1>'.format(results[2]['id'], results[2]['name'], results[2]['location'])
 
 
 if __name__ == '__main__':
