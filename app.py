@@ -1,6 +1,22 @@
-from flask import Flask, jsonify, request, url_for, redirect, session, render_template
+from flask import Flask, jsonify, request, url_for, redirect, session, render_template, g
+import sqlite3
 
 app = Flask(__name__)
+
+def connect_db():
+    sql = sqlite3.connect('data.db')
+    sql.row_factory = sqlite3.Row
+    return sql
+
+def get_db():
+    if not hasattr(g, 'sqlite3'):
+        g.sqlite_db = connect_db()
+    return g.sqlite_db
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
 
 app.config['DEBUG'] = True
 #Makes it so users can't modify session, should be radom (don't put sensentive info in session)
