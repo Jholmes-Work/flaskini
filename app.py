@@ -78,6 +78,13 @@ def processjson():
 
     return jsonify({'result' : 'Success', 'name' : name, 'location' : location, 'randomkeyinlist' : randomlist[1]})
 
+@app.route('/viewresults')
+def viewresults():
+    db = get_db()
+    cur = db.execute('select id, name, location from users')
+    results = cur.fetchall()
+    return '<h1>The ID is {}.  The name is {}.  The location is {}</h1>'.format(results[0]['id'], results[0]['name'], results[0]['location'])
+
 
 if __name__ == '__main__':
     app.run()
